@@ -24,6 +24,10 @@ const url = require('url');
 //   });
 // });
 
+// add data to file
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const dataObj = JSON.parse(data);
+
 // Server
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -36,12 +40,8 @@ const server = http.createServer((req, res) => {
   } else if (pathName === '/name') {
     res.end(' this is name for server side');
   } else if (pathName === '/api') {
-    // async way function read from database
-    fs.readFile(`${__dirname}/dev-data/data.json`, 'utf-8', (err, data) => {
-      const productData = JSON.parse(data);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(data);
-    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(data);
   } else {
     res.writeHead(404, { 'Content-Type': 'text/html' });
     res.end('<h1>404 Not Found</h1>');
