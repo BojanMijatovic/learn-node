@@ -2,30 +2,28 @@ const fs = require('fs');
 const http = require('http');
 const url = require('url');
 
-// blocking way
-// const textIn = fs.readFileSync('./txt/input.txt', 'utf-8');
-// const textOut = `This is what we know about avocado: ${textIn}.\nCreated on ${Date.now()}`;
-// fs.writeFileSync('./txt/output.txt', textOut);
-// console.log(textIn);
-// console.log(`File is in`);
+// replace template
+const replaceTemplate = (template, product) => {
+  let output = template.replace(/{%PRODUCTNAME%}/g, product.productName);
+  output = output.replace(/{%PRICE%}/g, product.price);
+  output = output.replace(/{%IMAGE%}/g, product.image);
+  output = output.replace(/{%FROM%}/g, product.from);
+  output = output.replace(/{%nutrients%}/g, product.nutrients);
+  output = output.replace(/{%quantity%}/g, product.quantity);
+  output = output.replace(/{%DESCRIPTION%}/g, product.description);
+  output = output.replace(/{%ID%}/g, product.id);
 
-//  async way function read
-// fs.readFile('./txt/start.txt', 'utf-8', (err, data1) => {
-//   fs.readFile(`./txt/${data1}.txt`, 'utf-8', (err, data2) => {
-//     console.log(data2);
-//     fs.readFile('./txt/append.txt', 'utf-8', (err, data3) => {
-//       console.log(data3);
-
-//       // async way function write
-//       fs.writeFile('./txt/final.txt', `${data2}\n ${data3}`, 'utf-8', (err) => {
-//         console.log(`File is writhen`);
-//       });
-//     });
-//   });
-// });
+  if (!product.organic) {
+    output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+  }
+  return output;
+};
 
 // add data to file
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
+const templateOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
+const templateCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
+const templateProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
 const dataObj = JSON.parse(data);
 
 // Server
@@ -35,10 +33,17 @@ const server = http.createServer((req, res) => {
   // router for different url
   const pathName = req.url;
 
-  if (pathName === '/products') {
-    res.end(' this is response for client side');
-  } else if (pathName === '/name') {
-    res.end(' this is name for server side');
+  //   overview page
+  if (pathName === '/' || pathName === '/overview') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+
+    const cardsHtml = dataObj.map((card) => replaceTemplate(templateCard, card)).join('');
+    const output = templateOverview.replace(/{%PRODUCT_CARDS%}/g, cardsHtml);
+    res.end(output);
+  }
+  //  product page
+  else if (pathName === '/products') {
+    res.end(' this is response product page from  client side');
   } else if (pathName === '/api') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(data);
