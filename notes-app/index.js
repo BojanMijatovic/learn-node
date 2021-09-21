@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const validator = require('validator');
 
 // const add = require('./utils.js');
@@ -10,5 +11,8 @@ const getNotes = require('./notes.js');
 const notes = getNotes();
 console.log(notes);
 
-const isEmail = validator.isEmail(mail);
-console.log(isEmail);
+// const isEmail = validator.isEmail(mail);
+// console.log(isEmail);
+
+console.log(chalk.bgBlue.whiteBright('Hello world!'));
+console.log(chalk.dim.underline.magentaBright('Success!'));
