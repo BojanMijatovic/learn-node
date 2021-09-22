@@ -4,7 +4,7 @@ const notes = require('./notes.js');
 
 const validator = require('validator');
 
-//  create add
+//    add notes
 yargs.command({
   command: 'add',
   describe: 'Add a note',
@@ -25,7 +25,7 @@ yargs.command({
   },
 });
 
-// create remove
+//   remove notes
 yargs.command({
   command: 'remove',
   describe: 'Remove a note',
@@ -39,18 +39,32 @@ yargs.command({
   handler: (argv) => notes.removeNote(argv.title),
 });
 
-//  create list notes
+//    list notes
 yargs.command({
   command: 'list',
   describe: 'List all notes',
-  handler: () => console.log(`Listing all notes`),
+  builder: {
+    title: {
+      describe: 'Listing all notes',
+      demandOption: false,
+      type: 'string',
+    },
+  },
+  handler: () => notes.listNotes(),
 });
 
-//  create read note
+//    read note
 yargs.command({
   command: 'read',
   describe: 'Read a note',
-  handler: () => console.log(`Reading single note`),
+  builder: {
+    title: {
+      describe: 'Reading a note',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+  handler: (argv) => notes.readNote(argv.title),
 });
 
 yargs.parse();
