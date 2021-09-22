@@ -23,3 +23,12 @@ const fs = require('fs');
 // const newData = JSON.stringify(newPersonJSON);
 
 // fs.writeFileSync('1-book.json', newData, 'utf8');
+
+const showPerson = fs.readFileSync('1-book.json', 'utf8');
+const showPersonObj = JSON.parse(showPerson);
+
+showPersonObj.name = 'Boris';
+showPersonObj.age = 135;
+
+const showPersonJSON = JSON.stringify(showPersonObj);
+fs.writeFileSync('1-book.json', showPersonJSON, 'utf8');
